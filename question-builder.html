@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Builder - Build Your Exam</title>
+    <link rel="stylesheet" href="shared/maker-style.css">
+    
+    <!-- MathJax Configuration for Live Preview -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="builder-container">
+        <!-- Header -->
+        <div class="builder-header">
+            <h1>🛠️ Question Builder</h1>
+            <p>Create, edit, and manage your exam questions</p>
+            
+            <div class="builder-nav">
+                <button class="nav-btn active" onclick="showSection('builder')">📝 Question Builder</button>
+                <button class="nav-btn" onclick="showSection('list')">📋 Questions List</button>
+                <button class="nav-btn" onclick="showSection('help')">❓ Help & Tips</button>
+            </div>
+        </div>
+
+        <!-- Message Container -->
+        <div id="messageContainer"></div>
+
+        <!-- Builder Section -->
+        <div id="builderSection">
+            <div class="builder-content">
+                <!-- Question Form Panel -->
+                <div class="builder-panel">
+                    <h2>📝 Create Question</h2>
+                    
+                    <div class="form-group required">
+                        <label for="questionText">Question Text (supports LaTeX math)</label>
+                        <textarea id="questionText" class="form-textarea" placeholder="Enter your question here... Use $ for inline math: $x^2$ or $$ for display math: $$\int_0^1 x dx$$" rows="4" required></textarea>
+                        <div class="form-help">Use LaTeX syntax for mathematical expressions. Example: $\frac{1}{2}$ or $$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$$</div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="questionTopic">Topic</label>
+                        <input type="text" id="questionTopic" class="form-input" placeholder="e.g., Vectors, Calculus, Algebra" required>
+                        <div class="form-help">Choose a clear, descriptive topic name for categorization</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="questionDifficulty">Difficulty Level</label>
+                        <select id="questionDifficulty" class="form-select">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate" selected>Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="videoLink">Video Tutorial Link (optional)</label>
+                        <input type="url" id="videoLink" class="form-input" placeholder="https://youtube.com/watch?v=...">
+                        <div class="form-help">Add a YouTube link to help students learn this topic</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Question Image (optional)</label>
+                        <div class="image-upload" id="imageUpload">
+                            <div class="upload-text">
+                                📷 Click to upload image or drag & drop<br>
+                                <small>Supports JPG, PNG, GIF (max 5MB)</small>
+                            </div>
+                            <input type="file" id="questionImage" accept="image/*">
+                        </div>
+                        <div id="imagePreview" class="image-preview"></div>
+                    </div>
+
+                    <div class="options-section">
+                        <h3>Answer Options</h3>
+                        <div class="form-help" style="margin-bottom: 15px;">Fill in all four options and select the correct answer</div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">A)</label>
+                            <input type="text" id="optionA" class="option-input" placeholder="Enter option A" required>
+                            <input type="radio" name="correctAnswer" value="A" class="correct-radio" checked>
+                            <label for="correctA">Correct</label>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="option-label">B)</label>
+                            <input type="text" id="optionB" class="option-input" placeholder="Enter option B" required>
+                            <input type="radio" name="correctAnswer" value="B" class="correct-radio">
+                            <label for="correctB">Correct</label>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="option-label">C)</label>
+                            <input type="text" id="optionC" class="option-input" placeholder="Enter option C" required>
+                            <input type="radio" name="correctAnswer" value="C" class="correct-radio">
+                            <label for="correctC">Correct</label>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="option-label">D)</label>
+                            <input type="text" id="optionD" class="option-input" placeholder="Enter option D" required>
+                            <input type="radio" name="correctAnswer" value="D" class="correct-radio">
+                            <label for="correctD">Correct</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="builder-panel preview-panel">
+                    <h2>👁️ Live Preview</h2>
+                    <div class="preview-container" id="previewContainer">
+                        <div class="preview-empty-state">
+                            <span class="empty-icon">📝</span>
+                            <h3>Start typing your question</h3>
+                            <p>Your preview will appear here as you type</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <div class="btn-group">
+                    <button id="addQuestionBtn" class="action-btn add-question-btn">➕ Add Question</button>
+                    <button id="clearFormBtn" class="action-btn clear-btn">🗑️ Clear Form</button>
+                    <button id="saveBtn" class="action-btn save-btn" disabled>💾 Save Progress</button>
+                    <button id="exportBtn" class="action-btn export-btn" disabled>📦 Export Package</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions List Section -->
+        <div id="listSection" class="hidden">
+            <div class="questions-list">
+                <h2>📋 Questions List</h2>
+                <div id="questionsListContainer">
+                    <div class="questions-list-empty">
+                        <span class="empty-icon">📝</span>
+                        <h3>No questions added yet</h3>
+                        <p>Create your first question using the builder above</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div id="helpSection" class="hidden">
+            <div class="builder-panel">
+                <h2>❓ Help & Tips</h2>
+                
+                <div style="line-height: 1.8;">
+                    <h3 style="color: #e74c3c; margin-top: 20px;">📝 Writing Questions</h3>
+                    <ul style="margin-left: 20px;">
+                        <li>Keep questions clear and concise</li>
+                        <li>Use proper grammar and punctuation</li>
+                        <li>Avoid trick questions unless necessary</li>
+                        <li>Make sure only one answer is clearly correct</li>
+                        <li>Test your questions with others before publishing</li>
+                    </ul>
+
+                    <h3 style="color: #e74c3c; margin-top: 20px;">🔢 Mathematical Expressions</h3>
+                    <ul style="margin-left: 20px;">
+                        <li>Use <code>$x^2$</code> for inline math: $x^2$</li>
+                        <li>Use <code>$$x^2$$</code> for display math: $$x^2$$</li>
+                        <li>Fractions: <code>$\frac{1}{2}$</code> → $\frac{1}{2}$</li>
+                        <li>Integrals: <code>$\int_0^1 x dx$</code> → $\int_0^1 x dx$</li>
+                        <li>Greek letters: <code>$\alpha, \beta, \gamma$</code> → $\alpha, \beta, \gamma$</li>
+                        <li>Vectors: <code>$\vec{v}$</code> → $\vec{v}$</li>
+                        <li>Matrices: <code>$\begin{pmatrix} a & b \\ c & d \end{pmatrix}$</code></li>
+                        <li>Square roots: <code>$\sqrt{x}$</code> → $\sqrt{x}$</li>
+                    </ul>
+
+                    <h3 style="color: #e74c3c; margin-top: 20px;">🖼️ Images</h3>
+                    <ul style="margin-left: 20px;">
+                        <li>Use clear, high-quality images</li>
+                        <li>Keep file sizes reasonable (under 5MB)</li>
+                        <li>Images should be relevant to the question</li>
+                        <li>Consider accessibility - describe images if needed</li>
+                        <li>Avoid images with text when possible</li>
+                    </ul>
+
+                    <h3 style="color: #e74c3c; margin-top: 20px;">📊 Export & Usage</h3>
+                    <ul style="margin-left: 20px;">
+                        <li>Export creates a complete exam package with 3 files</li>
+                        <li>Place <code>examname.js</code> in your <code>questions/</code> folder</li>
+                        <li>Place HTML files in your main project folder</li>
+                        <li>Save progress regularly to avoid losing work</li>
+                        <li>Test exported exams before sharing with students</li>
+                    </ul>
+
+                    <h3 style="color: #e74c3c; margin-top: 20px;">💡 Best Practices</h3>
+                    <ul style="margin-left: 20px;">
+                        <li>Group similar questions by topic</li>
+                        <li>Vary difficulty levels within each topic</li>
+                        <li>Include 5-10 questions per exam for best results</li>
+                        <li>Add meaningful video links for each topic</li>
+                        <li>Preview questions before adding them</li>
+                        <li>Use consistent formatting and terminology</li>
+                    </ul>
+
+                    <h3 style="color: #e74c3c; margin-top: 20px;">🚀 Quick Start</h3>
+                    <ol style="margin-left: 20px;">
+                        <li>Enter your question text (with LaTeX if needed)</li>
+                        <li>Choose a descriptive topic name</li>
+                        <li>Fill in all four answer options</li>
+                        <li>Select the correct answer</li>
+                        <li>Check the live preview</li>
+                        <li>Click "Add Question"</li>
+                        <li>Repeat for more questions</li>
+                        <li>Export when finished</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Maker -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="question-maker.html" class="action-btn" style="background: #95a5a6; color: white; text-decoration: none; display: inline-block;">
+                ← Back to Question Maker
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Section switching functionality
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('builderSection').classList.add('hidden');
+            document.getElementById('listSection').classList.add('hidden');
+            document.getElementById('helpSection').classList.add('hidden');
+            
+            // Show selected section
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Refresh questions list if showing list section
+            if (section === 'list' && typeof questionBuilder !== 'undefined') {
+                questionBuilder.updateQuestionsList();
+            }
+        }
+        
+        // Export modal functions
+        function showExportTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.export-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.export-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                alert('Copy failed. Please select and copy manually.');
+            }
+        }
+        
+        function downloadAllFiles() {
+            const data = window.exportData;
+            if (!data) return;
+            
+            // Download each file with delays
+            questionBuilder.downloadFile(data.questionContent, `${data.examName}.js`, 'text/javascript');
+            
+            setTimeout(() => {
+                questionBuilder.downloadFile(data.landingContent, `${data.examName}.html`, 'text/html');
+            }, 500);
+            
+            setTimeout(() => {
+                questionBuilder.downloadFile(data.examContent, `${data.examName}-exam.html`, 'text/html');
+            }, 1000);
+        }
+        
+        function closeExportModal() {
+            const modal = document.getElementById('exportModal');
+            if (modal) {
+                modal.remove();
+                delete window.exportData;
+            }
+        }
+        
+        // Check URL parameters for edit mode
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'edit') {
+            console.log('Edit mode detected');
+        }
+
+        // Form validation helpers
+        function validateForm() {
+            const requiredFields = document.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                    field.classList.add('success');
+                }
+            });
+            
+            return isValid;
+        }
+
+        // Real-time validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input, .form-textarea, .option-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.hasAttribute('required')) {
+                        if (this.value.trim()) {
+                            this.classList.remove('error');
+                            this.classList.add('success');
+                        } else {
+                            this.classList.add('error');
+                            this.classList.remove('success');
+                        }
+                    }
+                });
+                
+                input.addEventListener('input', function() {
+                    if (this.classList.contains('error') && this.value.trim()) {
+                        this.classList.remove('error');
+                        this.classList.add('success');
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <script src="shared/question-builder.js"></script>
+</body>
+</html>

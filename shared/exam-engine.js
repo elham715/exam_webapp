@@ -1,5 +1,5 @@
 // Exam engine functionality with MathJax, image support, and timer
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfisy5lKuRWsDepuGnqBvZBnHfi3e969zAA12YYRqfDTzIoIZ2w15wf8C5f30y-AFc/execURL"; // Replace when ready
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfisy5lKuRWsDepuGnqBvZBnHfi3e969zAA12YYRqfDTzIoIZ2w15wf8C5f30y-AFc/exec"; // Replace when ready
 
 const examForm = document.getElementById("examForm");
 const questionsContainer = document.getElementById("questionsContainer");
@@ -616,7 +616,7 @@ window.addEventListener("DOMContentLoaded", function() {
         setTimeout(() => {
             renderQuestions();
             initializeTimer();
-        }, 2000); // Wait 2 seconds for MathJax to load
+        }, 500); // Wait 2 seconds for MathJax to load
     }
 });
 

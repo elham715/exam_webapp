@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Question Maker</title>
+    <link rel="stylesheet" href="shared/maker-style.css">
+</head>
+<body>
+    <div class="maker-landing-container">
+        <div class="maker-landing-card">
+            <span class="maker-icon">✏️</span>
+            <h1>Exam Question Maker</h1>
+            <p class="maker-description">
+                Create professional exams with multiple choice questions, images, and video explanations. 
+                Generate complete exam packages automatically that work seamlessly with your existing system!
+            </p>
+
+            <div class="maker-features">
+                <h3>🛠️ Maker Features</h3>
+                <div class="feature-list">
+                    <li>Question Types: Multiple Choice (A, B, C, D)</li>
+                    <li>Image Support: Paste any image URL</li>
+                    <li>Video Links: YouTube explanations</li>
+                    <li>Auto-Generate: Complete exam package</li>
+                    <li>Integration: Works with existing Google Sheets</li>
+                </div>
+            </div>
+
+            <div class="email-section">
+                <h3>📝 Exam Details</h3>
+                <input type="text" id="examName" class="email-input" placeholder="Exam name (e.g., physics, chemistry)" required>
+                <div class="form-help" style="font-size: 0.9em; color: #7f8c8d; margin-top: 5px;">Use only letters, numbers, and hyphens. This will be your exam URL.</div>
+                
+                <input type="text" id="examTitle" class="email-input" placeholder="Exam title (e.g., Physics Fundamentals)" required>
+                <div class="form-help" style="font-size: 0.9em; color: #7f8c8d; margin-top: 5px;">This appears as the main heading students will see.</div>
+                
+                <textarea id="examDescription" class="email-input" placeholder="Exam description for students..." rows="3" required style="resize: vertical; min-height: 80px;"></textarea>
+                <div class="form-help" style="font-size: 0.9em; color: #7f8c8d; margin-top: 5px;">Describe what topics this exam covers.</div>
+                
+                <div id="inputError" class="error-message"></div>
+            </div>
+
+            <button id="startMaking" class="start-btn" disabled>
+                🚀 Start Creating Questions
+            </button>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="vector.html" style="color: #e74c3c; text-decoration: none; font-weight: 500;">
+                    👨‍🎓 Go to Student Section
+                </a>
+                <span style="margin: 0 15px; color: #bdc3c7;">|</span>
+                <a href="https://github.com/yourusername/yourrepo" target="_blank" style="color: #e74c3c; text-decoration: none; font-weight: 500;">
+                    📁 View Repository
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const examNameInput = document.getElementById("examName");
+        const examTitleInput = document.getElementById("examTitle");
+        const examDescInput = document.getElementById("examDescription");
+        const startBtn = document.getElementById("startMaking");
+        const inputError = document.getElementById("inputError");
+
+        // Enhanced validation function
+        function validateInputs() {
+            const name = examNameInput.value.trim();
+            const title = examTitleInput.value.trim();
+            const desc = examDescInput.value.trim();
+
+            // Clear previous styling
+            [examNameInput, examTitleInput, examDescInput].forEach(input => {
+                input.style.borderColor = "#ddd";
+            });
+
+            if (name && title && desc) {
+                // Validate exam name format
+                if (/^[a-zA-Z0-9-_]+$/.test(name) && name.length >= 3) {
+                    // Check for reserved names
+                    const reservedNames = ['question-maker', 'question-builder', 'shared', 'questions'];
+                    if (!reservedNames.includes(name.toLowerCase())) {
+                        startBtn.disabled = false;
+                        inputError.style.display = "none";
+                        
+                        // Visual feedback for valid inputs
+                        [examNameInput, examTitleInput, examDescInput].forEach(input => {
+                            input.style.borderColor = "#27ae60";
+                        });
+                        
+                        // Save to localStorage
+                        localStorage.setItem("examMakerData", JSON.stringify({
+                            name: name.toLowerCase(),
+                            title: title,
+                            description: desc
+                        }));
+                    } else {
+                        showError("⚠️ This name is reserved. Please choose a different exam name.");
+                    }
+                } else {
+                    showError("⚠️ Exam name must be at least 3 characters and contain only letters, numbers, hyphens, and underscores.");
+                }
+            } else {
+                startBtn.disabled = true;
+                inputError.style.display = "none";
+            }
+        }
+
+        function showError(message) {
+            startBtn.disabled = true;
+            inputError.style.display = "block";
+            inputError.textContent = message;
+            examNameInput.style.borderColor = "#e74c3c";
+        }
+
+        // Real-time validation
+        examNameInput.addEventListener("input", validateInputs);
+        examTitleInput.addEventListener("input", validateInputs);
+        examDescInput.addEventListener("input", validateInputs);
+
+        // Enhanced exam name input
+        examNameInput.addEventListener("input", function() {
+            // Auto-format: lowercase, replace spaces with hyphens
+            let value = this.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-_]/g, '');
+            if (value !== this.value) {
+                this.value = value;
+            }
+            validateInputs();
+        });
+
+        // Start button handler
+        startBtn.addEventListener("click", function() {
+            const data = JSON.parse(localStorage.getItem("examMakerData"));
+            if (data) {
+                this.innerHTML = "🚀 Loading question builder...";
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = "question-builder.html";
+                }, 500);
+            }
+        });
+
+        // Enter key support
+        [examNameInput, examTitleInput, examDescInput].forEach(input => {
+            input.addEventListener("keypress", function(e) {
+                if (e.key === "Enter" && !startBtn.disabled) {
+                    startBtn.click();
+                }
+            });
+        });
+
+        // Load any existing data
+        window.addEventListener("DOMContentLoaded", function() {
+            const savedData = localStorage.getItem("examMakerData");
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                examNameInput.value = data.name || "";
+                examTitleInput.value = data.title || "";
+                examDescInput.value = data.description || "";
+                validateInputs();
+            }
+        });
+    </script>
+</body>
+</html>
