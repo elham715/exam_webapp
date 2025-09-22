@@ -616,7 +616,7 @@ window.addEventListener("DOMContentLoaded", function() {
         setTimeout(() => {
             renderQuestions();
             initializeTimer();
-        }, 2000); // Wait 2 seconds for MathJax to load
+        }, 500); // Wait 2 seconds for MathJax to load
     }
 });
 
