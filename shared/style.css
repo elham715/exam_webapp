@@ -349,7 +349,7 @@ body {
     background: #f8f9ff;
     transform: translateX(3px);
 }
-
+a
 .option.selected {
     border-color: #3498db;
     background: #e8f0ff;
@@ -1105,5 +1105,284 @@ body {
     .topic-video-link:hover {
         transform: none;
         box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+    }
+}
+/* Timer Styles - Add to your style.css */
+
+.exam-timer {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.timer-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.timer-icon {
+    font-size: 1.5em;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.timer-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.timer-display {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    transition: color 0.3s ease;
+}
+
+.timer-display.normal {
+    color: #27ae60;
+}
+
+.timer-display.warning {
+    color: #f39c12;
+    animation: timerWarning 1s infinite alternate;
+}
+
+.timer-display.critical {
+    color: #e74c3c;
+    animation: timerCritical 0.5s infinite alternate;
+}
+
+@keyframes timerWarning {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+}
+
+@keyframes timerCritical {
+    from { 
+        opacity: 1; 
+        transform: scale(1);
+    }
+    to { 
+        opacity: 0.8; 
+        transform: scale(1.05);
+    }
+}
+
+.timer-progress-container {
+    width: 100%;
+    height: 8px;
+    background: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.timer-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    width: 100%;
+    transition: all 0.5s ease;
+    border-radius: 4px;
+}
+
+.timer-progress-bar.warning {
+    background: linear-gradient(90deg, #f39c12, #e67e22);
+}
+
+.timer-progress-bar.critical {
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+}
+
+.timer-status {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.timer-status.warning {
+    color: #f39c12;
+    font-weight: 600;
+}
+
+.timer-status.critical {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Auto-submit warning modal */
+.auto-submit-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.warning-modal {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-30px) scale(0.9);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.warning-modal h3 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.warning-modal p {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.warning-countdown {
+    font-size: 2em;
+    font-weight: bold;
+    color: #e74c3c;
+    margin: 15px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.warning-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.submit-now-btn, .continue-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-now-btn {
+    background: #27ae60;
+    color: white;
+}
+
+.submit-now-btn:hover {
+    background: #229954;
+    transform: translateY(-2px);
+}
+
+.continue-btn {
+    background: #95a5a6;
+    color: white;
+}
+
+.continue-btn:hover {
+    background: #7f8c8d;
+    transform: translateY(-2px);
+}
+
+/* Mobile responsive timer styles */
+@media (max-width: 768px) {
+    .exam-timer {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .timer-display {
+        font-size: 2em;
+        letter-spacing: 1px;
+    }
+
+    .timer-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .timer-title {
+        font-size: 1.1em;
+    }
+
+    .timer-icon {
+        font-size: 1.3em;
+    }
+
+    .warning-modal {
+        padding: 25px 20px;
+    }
+
+    .warning-modal h3 {
+        font-size: 1.2em;
+    }
+
+    .warning-countdown {
+        font-size: 1.5em;
+    }
+
+    .warning-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .submit-now-btn, .continue-btn {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .timer-display {
+        font-size: 1.8em;
+    }
+
+    .timer-status {
+        font-size: 0.85em;
     }
 }
