@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newtonian Mechanics Exam</title>
+    <link rel="stylesheet" href="shared/style.css">
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\KATEX_INLINE_OPEN', '\KATEX_INLINE_CLOSE']],
+                displayMath: [['$$', '$$'], ['\[', '\]']]],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="exam-container">
+        <div class="exam-header">
+            <h1>📚 Newtonian Mechanics Exam</h1>
+            <p>Answer all questions to the best of your ability</p>
+
+            <div class="progress-section">
+                <div class="progress-text" id="progressText">0 of 1 questions answered (0%)</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="exam-content">
+            <form id="examForm">
+                <div id="questionsContainer"></div>
+
+                <div class="exam-actions">
+                    <button type="button" id="submitBtn" class="submit-btn">📝 Submit Exam</button>
+                    <a href="newtonia_mechanics.html" class="back-btn">← Back to Start</a>
+                </div>
+            </form>
+
+            <div id="result" class="result-section" style="display:none;">
+                <div id="resultContent"></div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="newtonia_mechanics.html" class="start-btn">Take Again</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Timer Configuration -->
+<script>
+    window.TIMER_CONFIG = {
+        enabled: true,
+        totalMinutes: 30,
+        warningAtMinutes: 5,
+        criticalAtMinutes: 2,
+        autoSubmit: true
+    };
+</script>
+
+<!-- Load newtonia_mechanics questions -->
+<script src="questions/newtonia_mechanics.js"></script>
+<!-- Load exam engine -->
+<script src="shared/exam-engine.js"></script>
+
+</body>
+</html>
